@@ -28,3 +28,22 @@ def request_warning_details(warning_id) -> dict:
         return dict(request.json())
     else:
         return {}
+    
+
+def request_logo_list() -> list:
+    """Returns a list of all logos"""
+    request = requests.get(api_urls["logo_list"])
+    if request.status_code == 200:
+        logger.log("Fetched logo list from API", 3)
+        return request.json()
+    else:
+        return []
+    
+def request_logo(filename: str) -> bytes:
+    """Returns the logo with the given filename"""
+    request = requests.get(api_urls["logo_img"].format(filename=filename))
+    if request.status_code == 200:
+        logger.log(f"Fetched logo '{filename}' from API", 3)
+        return request.content
+    else:
+        return b''

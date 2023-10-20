@@ -3,6 +3,8 @@ from database.database import Database as DB
 from Logger.logger import Logger
 import json
 import time
+import logo_handle as logo
+import datetime
 
 # set up databases and logger
 warnings_db = DB("warnings")
@@ -100,28 +102,26 @@ def rewrite_format(warning_id: str) -> dict:
     """
     
     content = dict(get_warning_details(warning_id))
-    print(content)
     embed = {
         "title": content["info"][0]["headline"],
         "description": content["info"][0]["description"].replace("<br/>", "\n"),
         "location": content["info"][0]["area"][0]["areaDesc"],
         "id": warning_id,
-        "time": reformat_time(content["sent"])
+        "time": reformat_time(content["sent"]),
+        "logo": api.api_urls["logo_img"].format(filename=logo.get_logo(content["sender"])),
+        "author": logo.get_sender_name(content["sender"]),
     }
     logger.log(f"Rewrote warning '{warning_id}' to embed format", 3)
     return embed
 
-def reformat_time(input_time: str) -> str:
+def reformat_time(input_time: str) -> datetime.datetime:
     """
-    Reformats the time from the API to a more readable format
+    Reformats the time from the API to a datetime object
     API: 2023-10-20T09:53:22+02:00
-    Readable: 20.10.2023 11:53:22
     """
-    output_time = time.strptime(input_time, "%Y-%m-%dT%H:%M:%S%z")
-    return time.strftime("%d.%m.%Y %H:%M:%S", output_time)
-    
-    
-    
+    output_time = datetime.datetime.strptime(input_time, "%Y-%m-%dT%H:%M:%S%z")
+    return output_time
+
 def call():
     # fetch warnings
     fetch()
@@ -134,17 +134,11 @@ def call():
         fetch_details(warning_id)
         set_status(warning_id, "unseen")
     
-    # rewrite format to discord embed like format 
-    for warning_id in status_db.get_keys():
-        if status_db.get_value(warning_id) == "unseen":
-            rewrite_format(warning_id)
-            set_status(warning_id, "rewritten")
-    
     # line up warnings to post
     discord_warnings = []
     
     for warning_id in status_db.get_keys():
-        if status_db.get_value(warning_id) == "rewritten":
+        if status_db.get_value(warning_id) == "unseen":
             discord_warnings.append(rewrite_format(warning_id))
     logger.log(f"Prepared {len(discord_warnings)} warnings to post", 3)
     return discord_warnings

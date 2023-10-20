@@ -42,9 +42,17 @@ async def warning_worker():
                 title=warning["title"],
                 description=warning["description"],
                 color=discord.Color.red(),
+                timestamp=warning["time"]
             )
 
-            embed.set_footer(text=warning["time"])
+            # add logo to embed
+            embed.set_thumbnail(url=warning["logo"])
+
+            embed.set_footer(text=warning["location"])
+            
+            embed.set_author(name=warning["author"])
+            
+            
 
             # finally post to channel
             await channel.send(embed=embed)

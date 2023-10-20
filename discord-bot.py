@@ -6,7 +6,7 @@ import discord
 from database.database import Database as DB
 from Logger.logger import Logger
 import data_handle as data
-
+import logo_handle as logo_handle
 import discord.ext.commands as commands
 
 # set up databases and logger
@@ -55,6 +55,7 @@ async def warning_worker():
             
 
             # finally post to channel
+            logger.log(f"Entry Content: {warning}", 4)
             await channel.send(embed=embed)
             logger.log("Posted new entry to channel", 3)
             data.set_status(warning["id"], "seen")
@@ -68,5 +69,6 @@ async def on_ready():
     """
     logger.log(f'Logged in as {bot.user.name}', 3)
     bot.loop.create_task(warning_worker()) # start the rss feed checker
-    
+
+logo_handle.fetch_logos()
 bot.run(TOKEN)

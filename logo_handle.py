@@ -42,9 +42,15 @@ def fetch_logos():
     logo_db.set_raw(logo_dict)
 
 def get_logo(sender: str) -> str:    
-    logo = logo_db.get_value(sender)
-    return logo["image"]
-
+    try:
+        logo = logo_db.get_value(sender)
+        return logo["image"]
+    except:
+        return None
+    
 def get_sender_name(sender: str) -> str:
-    logo = logo_db.get_value(sender)
-    return logo["name"]
+    try:
+        logo = logo_db.get_value(sender)
+        return logo["name"]
+    except:
+        return sender

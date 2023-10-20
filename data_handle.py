@@ -102,13 +102,22 @@ def rewrite_format(warning_id: str) -> dict:
     """
     
     content = dict(get_warning_details(warning_id))
+    
+    logo_img = logo.get_logo(content["sender"])
+    
+    if logo_img == None:
+        logo_img = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Zivilschutzzeichen.svg/256px-Zivilschutzzeichen.svg.png"
+    else:
+        logo_img = api.api_urls["logo_img"].format(filename=logo_img)
+    
+    
     embed = {
         "title": content["info"][0]["headline"],
         "description": content["info"][0]["description"].replace("<br/>", "\n"),
         "location": content["info"][0]["area"][0]["areaDesc"],
         "id": warning_id,
         "time": reformat_time(content["sent"]),
-        "logo": api.api_urls["logo_img"].format(filename=logo.get_logo(content["sender"])),
+        "logo": logo_img,
         "author": logo.get_sender_name(content["sender"]),
     }
     logger.log(f"Rewrote warning '{warning_id}' to embed format", 3)

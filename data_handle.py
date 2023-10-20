@@ -2,6 +2,7 @@ import api_handle as api
 from database.database import Database as DB
 from Logger.logger import Logger
 import json
+import time
 
 # set up databases and logger
 warnings_db = DB("warnings")
@@ -104,11 +105,23 @@ def rewrite_format(warning_id: str) -> dict:
         "title": content["info"][0]["headline"],
         "description": content["info"][0]["description"].replace("<br/>", "\n"),
         "location": content["info"][0]["area"][0]["areaDesc"],
-        "id": warning_id
+        "id": warning_id,
+        "time": reformat_time(content["sent"])
     }
     logger.log(f"Rewrote warning '{warning_id}' to embed format", 3)
     return embed
 
+def reformat_time(input_time: str) -> str:
+    """
+    Reformats the time from the API to a more readable format
+    API: 2023-10-20T09:53:22+02:00
+    Readable: 20.10.2023 11:53:22
+    """
+    output_time = time.strptime(input_time, "%Y-%m-%dT%H:%M:%S%z")
+    return time.strftime("%d.%m.%Y %H:%M:%S", output_time)
+    
+    
+    
 def call():
     # fetch warnings
     fetch()

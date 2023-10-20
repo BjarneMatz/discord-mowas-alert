@@ -1,5 +1,5 @@
 import data_handle as dh
 import json
 
-print(dh.rewrite_format("mow.DE-NW-PB-SE093-20230910-93-000"))
+print(dh.reformat_time("2023-10-20T09:53:22+02:00"))
 

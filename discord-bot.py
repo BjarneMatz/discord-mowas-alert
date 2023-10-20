@@ -44,7 +44,7 @@ async def warning_worker():
                 color=discord.Color.red(),
             )
 
-            embed.set_footer(text=warning["location"])
+            embed.set_footer(text=warning["time"])
 
             # finally post to channel
             await channel.send(embed=embed)

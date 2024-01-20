@@ -1,3 +1,4 @@
+from cv2 import log
 import api_handle as api
 from database.database import Database as DB
 from Logger.logger import Logger
@@ -100,7 +101,7 @@ def rewrite_format(warning_id: str) -> dict:
     Returns:
         dict: _description_
     """
-    
+    logger.log(f"Rewriting warning '{warning_id}' to embed format", 4)
     content = dict(get_warning_details(warning_id))
     try:
         logo_img = logo.get_logo(content["sender"])

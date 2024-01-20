@@ -1,4 +1,3 @@
-from cv2 import log
 import api_handle as api
 from database.database import Database as DB
 from Logger.logger import Logger

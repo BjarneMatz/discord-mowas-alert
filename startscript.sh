@@ -1,0 +1,1 @@
+screen -S mowas_discord_bot python3 main.py

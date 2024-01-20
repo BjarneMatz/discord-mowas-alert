@@ -34,7 +34,7 @@ async def warning_worker():
     await bot.wait_until_ready()
     channel = bot.get_channel(int(CHANNEL_ID))
 
-    while not bot.is_closed(): # run until bot is closed
+    while not bot.is_closed():  # run until bot is closed
         # fetch new warnings
         warnings = data.call()
         for warning in warnings:
@@ -45,21 +45,18 @@ async def warning_worker():
                 timestamp=warning["time"]
             )
 
-            # add logo to embed
+            # add logo and other elements to embed
             embed.set_thumbnail(url=warning["logo"])
-
             embed.set_footer(text=warning["location"])
-            
             embed.set_author(name=warning["author"])
-            
-            
 
             # finally post to channel
             logger.log(f"Entry Content: {warning}", 4)
             await channel.send(embed=embed)
             logger.log("Posted new entry to channel", 3)
             data.set_status(warning["id"], "seen")
-        await asyncio.sleep(60) # wait 60 seconds to test again
+        await asyncio.sleep(60)  # wait 60 seconds to test again
+
 
 @bot.event
 async def on_ready():
@@ -68,7 +65,13 @@ async def on_ready():
     It executes the main function of the bot.
     """
     logger.log(f'Logged in as {bot.user.name}', 3)
-    bot.loop.create_task(warning_worker()) # start the rss feed checker
+    bot.loop.create_task(warning_worker())  # start the warning worker
 
-logo_handle.fetch_logos()
-bot.run(TOKEN)
+
+def start():
+    """
+    The main function of the bot.
+    """
+    logger.log("Starting bot", 3)
+    bot.run(TOKEN)
+    logger.log("Bot stopped", 3)

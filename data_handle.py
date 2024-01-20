@@ -102,8 +102,10 @@ def rewrite_format(warning_id: str) -> dict:
     """
     
     content = dict(get_warning_details(warning_id))
-    
-    logo_img = logo.get_logo(content["sender"])
+    try:
+        logo_img = logo.get_logo(content["sender"])
+    except KeyError:
+        logo_img = None
     
     if logo_img == None:
         logo_img = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Zivilschutzzeichen.svg/256px-Zivilschutzzeichen.svg.png"
